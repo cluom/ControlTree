@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlTree", "ControlTree\ControlTree.csproj", "{439D868C-9D37-491C-8413-43520D9F467E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{439D868C-9D37-491C-8413-43520D9F467E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439D868C-9D37-491C-8413-43520D9F467E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439D868C-9D37-491C-8413-43520D9F467E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439D868C-9D37-491C-8413-43520D9F467E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
