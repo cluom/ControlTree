@@ -8,7 +8,7 @@ namespace ControlTree
 
         private TreeTypeEnum(string id)
         {
-            Id = new(id);
+            Id = new NetString(id);
         }
 
         // "1" : oak tree : 橡树
