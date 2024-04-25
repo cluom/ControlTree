@@ -17,7 +17,13 @@ namespace ControlTree
         // ReSharper disable once InconsistentNaming
         private static IMonitor? Monitor;
         private static readonly HashSet<NetString> MinishTreeType = new();
-
+        public static readonly Dictionary<string, Texture2D> TextureMapping = new();
+        private static readonly Texture2D TransparentTexture;
+        
+        static TreePatch()
+        {
+            TransparentTexture = CreateTransparentTexture(60, 60, 4, Color.Red);
+        }
 
         public static void InitConfig(ModConfig config, IMonitor monitor)
         {
@@ -25,7 +31,7 @@ namespace ControlTree
             Monitor = monitor;
         }
 
-        public static void ChangeMinishTreeType(NetString treeType, bool flag = true) {
+        public static void ChangeTreeType(NetString treeType, bool flag = true) {
             if (flag)
             {
                 MinishTreeType.Add(treeType);
@@ -35,8 +41,8 @@ namespace ControlTree
                 MinishTreeType.Remove(treeType);
             }
         }
-        
-        public static Texture2D CreateTransparentTexture(int width, int height, int borderWidth, Color borderColor)
+
+        private static Texture2D CreateTransparentTexture(int width, int height, int borderWidth, Color borderColor)
         {
             var texture = new Texture2D(Game1.graphics.GraphicsDevice, width, height);
             var data = new Color[width * height];
@@ -54,14 +60,12 @@ namespace ControlTree
             return texture;
         }
 
-
         [HarmonyPrefix, HarmonyPatch(typeof(Tree), "draw")]
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedMember.Global
         public static void PrefixDraw(Tree __instance)
         {
             if (Config is not { ModEnable: true }) { return; }
-            
 
             if (__instance.growthStage.Value == 0 && Config.HighlightTreeSeed)
             {
@@ -69,7 +73,7 @@ namespace ControlTree
 
                 // 绘制红色的框
                 Game1.spriteBatch.Draw(
-                    CreateTransparentTexture(60, 60, 4, Color.Red),
+                    TransparentTexture,
                     Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
                     null, 
                     // ReSharper disable once PossibleLossOfFraction
@@ -88,7 +92,10 @@ namespace ControlTree
             if (__instance.stump.Value && !__instance.falling.Value) { return; }
             if (__instance.growthStage.Value < 5) { return; }
 
-            SpriteBatchPatch.CanMinish = true;
+            SpriteBatchPatch.CanChange = true;
+            if (__instance.TextureName is null) { return; }
+            var key = __instance.TextureName.Replace("TerrainFeatures\\", "") + ".png";
+            if (TextureMapping.TryGetValue(key, out var value)) SpriteBatchPatch.Texture = value;
 
         }
 
@@ -96,7 +103,8 @@ namespace ControlTree
         // ReSharper disable once UnusedMember.Global
         public static void PostfixDraw()
         {
-            SpriteBatchPatch.CanMinish = false;
+            SpriteBatchPatch.CanChange = false;
+            SpriteBatchPatch.Texture = null;
         }
     }
 
@@ -105,40 +113,52 @@ namespace ControlTree
     {
         // ReSharper disable once InconsistentNaming
         private static ModConfig? Config;
-        public static bool CanMinish { get; set; }
+        public static bool CanChange { get; set; }
+        public static Texture2D? Texture { get; set; }
 
         public static void InitConfig(ModConfig config)
         {
             Config = config;
         }
 
-
         [HarmonyPrefix, HarmonyPatch(typeof(SpriteBatch), "Draw", new Type[] { typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(Vector2), typeof(SpriteEffects), typeof(float) })]
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedParameter.Global
         // ReSharper disable once UnusedMember.Global
-        public static bool Prefix_Draw(SpriteBatch __instance, Texture2D texture, [HarmonyArgument("position")] ref Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, [HarmonyArgument("scale")] ref Vector2 scale, SpriteEffects effects, float layerDepth)
+        public static bool Prefix_Draw(SpriteBatch __instance, [HarmonyArgument("texture")] ref Texture2D texture, [HarmonyArgument("position")] ref Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, [HarmonyArgument("scale")] ref Vector2 scale, SpriteEffects effects, float layerDepth)
         {
-            if (!CanMinish) return true;
-            if (Config is { RenderTreeTrunk: false })
+            if (!CanChange) return true;
+            switch (Config)
             {
-                if (origin != Vector2.Zero) { return false; }
-                return Config.RenderLeafyShadow || texture != Game1.mouseCursors;
+                case { RenderTreeTrunk: false } when origin != Vector2.Zero:
+                    return false;
+                case { RenderTreeTrunk: false }:
+                    return Config.RenderLeafyShadow || texture != Game1.mouseCursors;
+                case { TextureChange: false, MinishTree: false}:
+                    return true;
             }
 
-            // 缩小比例
-            scale *= 0.5f;
-
-            if (sourceRectangle != null)
+            if (Config is {MinishTree: true} || (Config is { TextureChange: true } && (texture == Game1.mouseCursors || texture == Game1.mouseCursors_1_6)))
             {
-                var rect = sourceRectangle.Value;
-                position.X += rect.Width;
-                position.Y += rect.Height;
-                if (texture != Game1.mouseCursors && texture != Game1.mouseCursors_1_6) { position.Y += 16f; }
+                // 缩小比例
+                scale *= 0.5f;
+
+                if (sourceRectangle is not null)
+                {
+                    var rect = sourceRectangle.Value;
+                    position.X += rect.Width;
+                    position.Y += rect.Height;
+                    if (texture != Game1.mouseCursors && texture != Game1.mouseCursors_1_6) { position.Y += 16f; }
+                }
+
+                position -= origin * 2f;
+                position.Y += origin.Y * 0.75f;
             }
 
-            position -= origin * 2f;
-            position.Y += origin.Y * 0.75f;
+            if (Config is {TextureChange: true} && Texture is not null && texture != Game1.mouseCursors && texture != Game1.mouseCursors_1_6)
+            {
+                texture = Texture;
+            }
 
             return true;
         }

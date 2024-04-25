@@ -1,5 +1,6 @@
 ﻿using GenericModConfigMenu;
 using HarmonyLib;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -20,14 +21,20 @@ namespace ControlTree
             helper.Events.Input.ButtonsChanged += OnButtonsChanged!;
             helper.Events.GameLoop.GameLaunched += OnGameLaunched!;
 
-            if (Config.MinishOak) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Oak.Id);
-            if (Config.MinishMaple) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Maple.Id);
-            if (Config.MinishPine) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Pine.Id);
-            if (Config.MinishMahogany) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Mahogany.Id);
-            if (Config.MinishGreenRainType1) TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType1.Id);
-            if (Config.MinishGreenRainType2) TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType2.Id);
-            if (Config.MinishGreenRainType3) TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType3.Id);
-            if (Config.MinishMystic) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Mystic.Id);
+            if (Config.ChangeOak) TreePatch.ChangeTreeType(TreeTypeEnum.Oak.Id);
+            if (Config.ChangeMaple) TreePatch.ChangeTreeType(TreeTypeEnum.Maple.Id);
+            if (Config.ChangePine) TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id);
+            if (Config.ChangeMahogany) TreePatch.ChangeTreeType(TreeTypeEnum.Mahogany.Id);
+            if (Config.ChangeGreenRainType1) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType1.Id);
+            if (Config.ChangeGreenRainType2) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType2.Id);
+            if (Config.ChangeGreenRainType3) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id);
+            if (Config.ChangeMystic) TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id);
+
+            foreach (var textureName in helper.ModContent.Load<List<string>>("assets/textures.json"))
+            {
+                Monitor.Log($"Load texture: {textureName}");
+                TreePatch.TextureMapping[textureName] = helper.ModContent.Load<Texture2D>($"assets/{textureName}");
+            }
 
             TreePatch.InitConfig(Config, Monitor);
             SpriteBatchPatch.InitConfig(Config);
@@ -64,6 +71,20 @@ namespace ControlTree
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
+                name: () => Helper.Translation.Get("config.texture_change.name"),
+                tooltip: () => Helper.Translation.Get("config.texture_change.tooltip"),
+                getValue: () => Config.TextureChange,
+                setValue: value => Config.TextureChange = value
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.minish_tree.name"),
+                tooltip: () => Helper.Translation.Get("config.minish_tree.tooltip"),
+                getValue: () => Config.MinishTree,
+                setValue: value => Config.MinishTree = value
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
                 name: () => Helper.Translation.Get("config.highlight_tree_seed.name"),
                 tooltip: () => Helper.Translation.Get("config.highlight_tree_seed.tooltip"),
                 getValue: () => Config.HighlightTreeSeed,
@@ -85,90 +106,90 @@ namespace ControlTree
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_oak.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_oak.tooltip"),
-                getValue: () => Config.MinishOak,
+                name: () => Helper.Translation.Get("config.change_oak.name"),
+                tooltip: () => Helper.Translation.Get("config.change_oak.tooltip"),
+                getValue: () => Config.ChangeOak,
                 setValue: value =>
                 {
-                    Config.MinishOak = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.Oak.Id, value);
+                    Config.ChangeOak = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Oak.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_maple.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_maple.tooltip"),
-                getValue: () => Config.MinishMaple,
+                name: () => Helper.Translation.Get("config.change_maple.name"),
+                tooltip: () => Helper.Translation.Get("config.change_maple.tooltip"),
+                getValue: () => Config.ChangeMaple,
                 setValue: value =>
                 {
-                    Config.MinishMaple = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.Maple.Id, value);
+                    Config.ChangeMaple = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Maple.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_pine.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_pine.tooltip"),
-                getValue: () => Config.MinishPine,
+                name: () => Helper.Translation.Get("config.change_pine.name"),
+                tooltip: () => Helper.Translation.Get("config.change_pine.tooltip"),
+                getValue: () => Config.ChangePine,
                 setValue: value =>
                 {
-                    Config.MinishPine = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.Pine.Id, value);
+                    Config.ChangePine = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_mahogany.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_mahogany.tooltip"),
-                getValue: () => Config.MinishMahogany,
+                name: () => Helper.Translation.Get("config.change_mahogany.name"),
+                tooltip: () => Helper.Translation.Get("config.change_mahogany.tooltip"),
+                getValue: () => Config.ChangeMahogany,
                 setValue: value =>
                 {
-                    Config.MinishMahogany = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.Mahogany.Id, value);
+                    Config.ChangeMahogany = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Mahogany.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_green_rain_type1.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_green_rain_type1.tooltip"),
-                getValue: () => Config.MinishGreenRainType1,
+                name: () => Helper.Translation.Get("config.change_green_rain_type1.name"),
+                tooltip: () => Helper.Translation.Get("config.change_green_rain_type1.tooltip"),
+                getValue: () => Config.ChangeGreenRainType1,
                 setValue: value =>
                 {
-                    Config.MinishGreenRainType1 = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType1.Id, value);
+                    Config.ChangeGreenRainType1 = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType1.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_green_rain_type2.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_green_rain_type2.tooltip"),
-                getValue: () => Config.MinishGreenRainType2,
+                name: () => Helper.Translation.Get("config.change_green_rain_type2.name"),
+                tooltip: () => Helper.Translation.Get("config.change_green_rain_type2.tooltip"),
+                getValue: () => Config.ChangeGreenRainType2,
                 setValue: value =>
                 {
-                    Config.MinishGreenRainType2 = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType2.Id, value);
+                    Config.ChangeGreenRainType2 = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType2.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_green_rain_type3.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_green_rain_type3.tooltip"),
-                getValue: () => Config.MinishGreenRainType3,
+                name: () => Helper.Translation.Get("config.change_green_rain_type3.name"),
+                tooltip: () => Helper.Translation.Get("config.change_green_rain_type3.tooltip"),
+                getValue: () => Config.ChangeGreenRainType3,
                 setValue: value =>
                 {
-                    Config.MinishGreenRainType3 = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType3.Id, value);
+                    Config.ChangeGreenRainType3 = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id, value);
                 }
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                name: () => Helper.Translation.Get("config.minish_mystic.name"),
-                tooltip: () => Helper.Translation.Get("config.minish_mystic.tooltip"),
-                getValue: () => Config.MinishMystic,
+                name: () => Helper.Translation.Get("config.change_mystic.name"),
+                tooltip: () => Helper.Translation.Get("config.change_mystic.tooltip"),
+                getValue: () => Config.ChangeMystic,
                 setValue: value =>
                 {
-                    Config.MinishMystic = value;
-                    TreePatch.ChangeMinishTreeType(TreeTypeEnum.Mystic.Id, value);
+                    Config.ChangeMystic = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id, value);
                 }
             );
         }
