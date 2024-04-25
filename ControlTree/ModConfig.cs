@@ -6,6 +6,7 @@ namespace ControlTree
     {
         public bool ModEnable { get; set; } = true;
         public KeybindList ModEnableToggleKey { get; set; } = KeybindList.Parse("L");
+        public bool HighlightTreeSeed { get; set; } = false;
         public bool RenderTreeTrunk { get; set; } = true;
         public bool RenderLeafyShadow { get; set; } = true;
         public bool MinishOak { get; set; } = true;

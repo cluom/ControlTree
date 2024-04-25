@@ -3,6 +3,8 @@
     "config.mod_enable.tooltip": "是否生效对树木的渲染控制",
     "config.mod_enable_toggle_key.name": "模组开关快捷键",
     "config.mod_enable_toggle_key.tooltip": "可以快捷控制模组是否生效",
+    "config.highlight_tree_seed.name": "是否高亮树种",
+    "config.highlight_tree_seed.tooltip": "勾选后会有一个闪烁的红框标记树种位置再也不会眼瞎啦(っ ̯ -｡)",
     "config.render_tree_trunk.name": "是否渲染树干",
     "config.render_tree_trunk.tooltip": "取消勾选时将会把一颗成熟的树渲染成树桩",
     "config.render_leafy_shadow.name": "是否渲染树的影子",

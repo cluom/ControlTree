@@ -5,6 +5,7 @@ using Netcode;
 using StardewValley.TerrainFeatures;
 using StardewValley;
 using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 
 namespace ControlTree
 {
@@ -13,11 +14,15 @@ namespace ControlTree
     {
         // ReSharper disable once InconsistentNaming
         private static ModConfig? Config;
+        // ReSharper disable once InconsistentNaming
+        private static IMonitor? Monitor;
         private static readonly HashSet<NetString> MinishTreeType = new();
 
-        public static void InitConfig(ModConfig config)
+
+        public static void InitConfig(ModConfig config, IMonitor monitor)
         {
             Config = config;
+            Monitor = monitor;
         }
 
         public static void ChangeMinishTreeType(NetString treeType, bool flag = true) {
@@ -30,6 +35,24 @@ namespace ControlTree
                 MinishTreeType.Remove(treeType);
             }
         }
+        
+        public static Texture2D CreateTransparentTexture(int width, int height, int borderWidth, Color borderColor)
+        {
+            var texture = new Texture2D(Game1.graphics.GraphicsDevice, width, height);
+            var data = new Color[width * height];
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var isBorder = y < borderWidth || y >= height - borderWidth || x < borderWidth || x >= width - borderWidth;
+                    data[y * width + x] = isBorder ? borderColor : Color.Transparent;
+                }
+            }
+
+            texture.SetData(data);
+            return texture;
+        }
 
 
         [HarmonyPrefix, HarmonyPatch(typeof(Tree), "draw")]
@@ -38,6 +61,26 @@ namespace ControlTree
         public static void PrefixDraw(Tree __instance)
         {
             if (Config is not { ModEnable: true }) { return; }
+            
+
+            if (__instance.growthStage.Value == 0 && Config.HighlightTreeSeed)
+            {
+                var tileLocation = __instance.Tile;
+
+                // 绘制红色的框
+                Game1.spriteBatch.Draw(
+                    CreateTransparentTexture(60, 60, 4, Color.Red),
+                    Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
+                    null, 
+                    // ReSharper disable once PossibleLossOfFraction
+                    Color.Red * (0.2f + (float)Math.Abs(Math.Sin((double)DateTime.Now.Ticks / TimeSpan.TicksPerSecond * Math.PI)) * 0.8f),
+                    0f,
+                    Vector2.Zero,
+                    1f,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
 
             var treeType = __instance.treeType;
 

@@ -29,7 +29,7 @@ namespace ControlTree
             if (Config.MinishGreenRainType3) TreePatch.ChangeMinishTreeType(TreeTypeEnum.GreenRainType3.Id);
             if (Config.MinishMystic) TreePatch.ChangeMinishTreeType(TreeTypeEnum.Mystic.Id);
 
-            TreePatch.InitConfig(Config);
+            TreePatch.InitConfig(Config, Monitor);
             SpriteBatchPatch.InitConfig(Config);
 
             Harmony harmony = new(ModManifest.UniqueID);
@@ -61,6 +61,13 @@ namespace ControlTree
                 tooltip: () => Helper.Translation.Get("config.mod_enable_toggle_key.tooltip"),
                 getValue: () => Config.ModEnableToggleKey,
                 setValue: value => Config.ModEnableToggleKey = value
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.highlight_tree_seed.name"),
+                tooltip: () => Helper.Translation.Get("config.highlight_tree_seed.tooltip"),
+                getValue: () => Config.HighlightTreeSeed,
+                setValue: value => Config.HighlightTreeSeed = value
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
