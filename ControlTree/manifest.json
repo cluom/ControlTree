@@ -2,7 +2,7 @@
     "Name": "Control Tree",
     "Author": "Cluom",
     "Version": "1.0.1",
-    "Description": "Can cantrol tree for a better view.",
+    "Description": "Can control tree for a better view.",
     "UniqueID": "Cluom.ControlTree",
     "EntryDll": "ControlTree.dll",
     "MinimumApiVersion": "4.0.0",

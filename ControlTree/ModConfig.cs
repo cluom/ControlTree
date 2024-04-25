@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI.Utilities;
+﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI.Utilities;
 
 namespace ControlTree
 {
@@ -9,6 +10,8 @@ namespace ControlTree
         public bool TextureChange { get; set; } = true;
         public bool MinishTree { get; set; }
         public bool HighlightTreeSeed { get; set; }
+        
+        public Color HighlightTreeSeedColor { get; set; } = Color.Red;
         public bool RenderTreeTrunk { get; set; } = true;
         public bool RenderLeafyShadow { get; set; } = true;
         public bool ChangeOak { get; set; } = true;

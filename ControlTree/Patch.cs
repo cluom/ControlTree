@@ -22,7 +22,7 @@ namespace ControlTree
         
         static TreePatch()
         {
-            TransparentTexture = CreateTransparentTexture(60, 60, 4, Color.Red);
+            TransparentTexture = CreateTransparentTexture(60, 60, 4);
         }
 
         public static void InitConfig(ModConfig config, IMonitor monitor)
@@ -42,7 +42,7 @@ namespace ControlTree
             }
         }
 
-        private static Texture2D CreateTransparentTexture(int width, int height, int borderWidth, Color borderColor)
+        private static Texture2D CreateTransparentTexture(int width, int height, int borderWidth)
         {
             var texture = new Texture2D(Game1.graphics.GraphicsDevice, width, height);
             var data = new Color[width * height];
@@ -52,7 +52,7 @@ namespace ControlTree
                 for (var x = 0; x < width; x++)
                 {
                     var isBorder = y < borderWidth || y >= height - borderWidth || x < borderWidth || x >= width - borderWidth;
-                    data[y * width + x] = isBorder ? borderColor : Color.Transparent;
+                    data[y * width + x] = isBorder ? Color.White : Color.Transparent;
                 }
             }
 
@@ -71,13 +71,13 @@ namespace ControlTree
             {
                 var tileLocation = __instance.Tile;
 
-                // 绘制红色的框
+                // 绘制高亮框
                 Game1.spriteBatch.Draw(
                     TransparentTexture,
                     Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
                     null, 
                     // ReSharper disable once PossibleLossOfFraction
-                    Color.Red * (0.2f + (float)Math.Abs(Math.Sin((double)DateTime.Now.Ticks / TimeSpan.TicksPerSecond * Math.PI)) * 0.8f),
+                    Config.HighlightTreeSeedColor * (0.2f + (float)Math.Abs(Math.Sin((double)DateTime.Now.Ticks / TimeSpan.TicksPerSecond * Math.PI)) * 0.8f),
                     0f,
                     Vector2.Zero,
                     1f,

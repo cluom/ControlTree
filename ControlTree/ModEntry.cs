@@ -1,5 +1,6 @@
 ﻿using GenericModConfigMenu;
 using HarmonyLib;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -12,6 +13,8 @@ namespace ControlTree
     {
         // ReSharper disable once InconsistentNaming
         private ModConfig Config = null!;
+        private readonly Texture2D _highlightTreeSeedColorTexture = new(Game1.graphics.GraphicsDevice, 1, 1);
+        private Color _highlightTreeSeedColor = Color.Red;
 
         public override void Entry(IModHelper helper)
         {
@@ -29,7 +32,10 @@ namespace ControlTree
             if (Config.ChangeGreenRainType2) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType2.Id);
             if (Config.ChangeGreenRainType3) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id);
             if (Config.ChangeMystic) TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id);
-
+            
+            _highlightTreeSeedColorTexture.SetData(new[] { Config.HighlightTreeSeedColor });
+            _highlightTreeSeedColor = Config.HighlightTreeSeedColor;
+            
             foreach (var textureName in helper.ModContent.Load<List<string>>("assets/textures.json"))
             {
                 Monitor.Log($"Load texture: {textureName}");
@@ -55,6 +61,10 @@ namespace ControlTree
                 save: () => Helper.WriteConfig(Config)
             );
 
+            configMenu.AddSectionTitle(
+                mod: ModManifest,
+                text: () => Helper.Translation.Get("config.title.text")
+            );
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.mod_enable.name"),
@@ -90,6 +100,75 @@ namespace ControlTree
                 getValue: () => Config.HighlightTreeSeed,
                 setValue: value => Config.HighlightTreeSeed = value
             );
+            configMenu.AddImage(
+                mod: ModManifest,
+                texture: () => _highlightTreeSeedColorTexture
+                
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.highlight_tree_seed_color.name"),
+                tooltip: () => Helper.Translation.Get("config.highlight_tree_seed_color.tooltip"),
+                min: 0,
+                max: 255,
+                getValue: () => Config.HighlightTreeSeedColor.R,
+                setValue: value =>
+                {
+                    var newColor = Config.HighlightTreeSeedColor;
+                    newColor.R = (byte)value;
+                    _highlightTreeSeedColorTexture.SetData(new[] { newColor });
+                    Config.HighlightTreeSeedColor = newColor;
+                },
+                formatValue: i =>
+                {
+                    if (_highlightTreeSeedColor.R == i) return i.ToString("X");
+                    _highlightTreeSeedColor.R = (byte)i;
+                    _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
+                    return i.ToString("X");
+                }
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "",
+                min: 0,
+                max: 255,
+                getValue: () => Config.HighlightTreeSeedColor.G,
+                setValue: value =>
+                {
+                    var newColor = Config.HighlightTreeSeedColor;
+                    newColor.G = (byte)value;
+                    _highlightTreeSeedColorTexture.SetData(new[] { newColor });
+                    Config.HighlightTreeSeedColor = newColor;
+                },
+                formatValue: i =>
+                {
+                    if (_highlightTreeSeedColor.G == i) return i.ToString("X");
+                    _highlightTreeSeedColor.G = (byte)i;
+                    _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
+                    return i.ToString("X");
+                }
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => "",
+                min: 0,
+                max: 255,
+                getValue: () => Config.HighlightTreeSeedColor.B,
+                setValue: value =>
+                {
+                    var newColor = Config.HighlightTreeSeedColor;
+                    newColor.B = (byte)value;
+                    _highlightTreeSeedColorTexture.SetData(new[] { newColor });
+                    Config.HighlightTreeSeedColor = newColor;
+                },
+                formatValue: i =>
+                {
+                    if (_highlightTreeSeedColor.B == i) return i.ToString("X");
+                    _highlightTreeSeedColor.B = (byte)i;
+                    _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
+                    return i.ToString("X");
+                }
+            );
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.render_tree_trunk.name"),
@@ -103,6 +182,10 @@ namespace ControlTree
                 tooltip: () => Helper.Translation.Get("config.render_leafy_shadow.tooltip"),
                 getValue: () => Config.RenderLeafyShadow,
                 setValue: value => Config.RenderLeafyShadow = value
+            );
+            configMenu.AddParagraph(
+                mod: ModManifest,
+                text: () => ""
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
