@@ -121,10 +121,10 @@ namespace ControlTree
                 },
                 formatValue: i =>
                 {
-                    if (_highlightTreeSeedColor.R == i) return i.ToString("X");
+                    if (_highlightTreeSeedColor.R == i) return $"R: {i:X}";;
                     _highlightTreeSeedColor.R = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
-                    return i.ToString("X");
+                    return $"R: {i:X}";
                 }
             );
             configMenu.AddNumberOption(
@@ -142,10 +142,10 @@ namespace ControlTree
                 },
                 formatValue: i =>
                 {
-                    if (_highlightTreeSeedColor.G == i) return i.ToString("X");
+                    if (_highlightTreeSeedColor.G == i) return $"G: {i:X}";;
                     _highlightTreeSeedColor.G = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
-                    return i.ToString("X");
+                    return $"G: {i:X}";
                 }
             );
             configMenu.AddNumberOption(
@@ -163,10 +163,10 @@ namespace ControlTree
                 },
                 formatValue: i =>
                 {
-                    if (_highlightTreeSeedColor.B == i) return i.ToString("X");
+                    if (_highlightTreeSeedColor.B == i) return $"B: {i:X}";;
                     _highlightTreeSeedColor.B = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
-                    return i.ToString("X");
+                    return $"B: {i:X}";
                 }
             );
             configMenu.AddBoolOption(
