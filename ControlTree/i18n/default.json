@@ -9,7 +9,7 @@
   "config.minish_tree.name": "Minimize Trees",
   "config.minish_tree.tooltip": "Check to minimize the selected trees below by half",
   "config.highlight_tree_seed.name": "Highlight Tree Seeds",
-  "config.highlight_tree_seed.tooltip": "Check to mark the position of tree seeds with a flashing red box",
+  "config.highlight_tree_seed.tooltip": "Check to mark the position of tree seeds with a flashing highlight box",
   "config.highlight_tree_seed_color.name": "Highlight box color",
   "config.highlight_tree_seed_color.tooltip": "You can set the color of the highlight box used to mark tree seeds",
   "config.render_tree_trunk.name": "Render Tree Trunk",

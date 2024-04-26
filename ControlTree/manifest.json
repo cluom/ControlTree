@@ -1,7 +1,7 @@
 {
     "Name": "Control Tree",
     "Author": "Cluom",
-    "Version": "1.0.1",
+    "Version": "1.0.2",
     "Description": "Can control tree for a better view.",
     "UniqueID": "Cluom.ControlTree",
     "EntryDll": "ControlTree.dll",

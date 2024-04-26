@@ -79,13 +79,13 @@ namespace ControlTree
                 getValue: () => Config.ModEnableToggleKey,
                 setValue: value => Config.ModEnableToggleKey = value
             );
-            configMenu.AddBoolOption(
-                mod: ModManifest,
-                name: () => Helper.Translation.Get("config.texture_change.name"),
-                tooltip: () => Helper.Translation.Get("config.texture_change.tooltip"),
-                getValue: () => Config.TextureChange,
-                setValue: value => Config.TextureChange = value
-            );
+            // configMenu.AddBoolOption(
+            //     mod: ModManifest,
+            //     name: () => Helper.Translation.Get("config.texture_change.name"),
+            //     tooltip: () => Helper.Translation.Get("config.texture_change.tooltip"),
+            //     getValue: () => Config.TextureChange,
+            //     setValue: value => Config.TextureChange = value
+            // );
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.minish_tree.name"),

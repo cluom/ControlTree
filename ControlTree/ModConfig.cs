@@ -7,8 +7,8 @@ namespace ControlTree
     {
         public bool ModEnable { get; set; } = true;
         public KeybindList ModEnableToggleKey { get; set; } = KeybindList.Parse("L");
-        public bool TextureChange { get; set; } = true;
-        public bool MinishTree { get; set; }
+        public bool TextureChange { get; set; }
+        public bool MinishTree { get; set; } = true;
         public bool HighlightTreeSeed { get; set; }
         
         public Color HighlightTreeSeedColor { get; set; } = Color.Red;
