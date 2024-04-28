@@ -16,6 +16,7 @@ namespace ControlTree
         // ReSharper disable once InconsistentNaming
         private static ModConfig? Config;
         // ReSharper disable once InconsistentNaming
+        // ReSharper disable once NotAccessedField.Local
         private static IMonitor? Monitor;
         private static readonly HashSet<NetString> MinishTreeType = new();
         public static readonly Dictionary<string, Texture2D> TextureMapping = new();
@@ -48,7 +49,7 @@ namespace ControlTree
         {
             var tileLocation = tree.Tile;
             var totalGameTime = Game1.currentGameTime.TotalGameTime;
-            var globalPosition1 = tileLocation * 64f + new Vector2(0.0f, (float)(4.0 * Math.Round(Math.Sin(totalGameTime.TotalMilliseconds / 250.0), 2)) - 64f);
+            var globalPosition1 = tileLocation * 64f + new Vector2(-8.0f, (float)(4.0 * Math.Round(Math.Sin(totalGameTime.TotalMilliseconds / 250.0), 2)) - 64f);
             var vector22 = new Vector2(40f, 36f);
             Game1.spriteBatch.Draw(
                 Game1.mouseCursors, 
@@ -128,12 +129,12 @@ namespace ControlTree
             }
             
             // 绘制种子提示
-            if (__instance.hasSeed.Value)
+            if (__instance.hasSeed.Value && Config.ShowTreeSeedTips && __instance.growthStage.Value >= 5)
             {
                 DrawTipItem(__instance, ItemRegistry.GetDataOrErrorItem(ItemRegistry.Create(__instance.GetData().SeedItemId).QualifiedItemId), 5f);
             }
             // 绘制苔藓提示
-            if (__instance.hasMoss.Value)
+            if (__instance.hasMoss.Value && Config.ShowTreeMossTips && __instance.growthStage.Value >= 5)
             {
                 DrawTipItem(__instance, ItemRegistry.GetDataOrErrorItem(ItemRegistry.Create("(O)Moss").QualifiedItemId));
             }
@@ -152,9 +153,8 @@ namespace ControlTree
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(Tree), "draw")]
-        // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedMember.Global
-        public static void PostfixDraw(Tree __instance)
+        public static void PostfixDraw()
         {
             SpriteBatchPatch.CanChange = false;
             SpriteBatchPatch.Texture = null;

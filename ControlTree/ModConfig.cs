@@ -8,8 +8,15 @@ namespace ControlTree
         public bool ModEnable { get; set; } = true;
         public KeybindList ModEnableToggleKey { get; set; } = KeybindList.Parse("L");
         public bool TextureChange { get; set; } = true;
+        public KeybindList TextureChangeToggleKey { get; set; } = KeybindList.Parse("");
         public bool MinishTree { get; set; }
+        public KeybindList MinishTreeToggleKey { get; set; } = KeybindList.Parse("");
         public bool HighlightTreeSeed { get; set; }
+        public KeybindList HighlightTreeSeedToggleKey { get; set; } = KeybindList.Parse("");
+        public bool ShowTreeSeedTips { get; set; } = true;
+        public KeybindList ShowTreeSeedTipsToggleKey { get; set; } = KeybindList.Parse("");
+        public bool ShowTreeMossTips { get; set; } = true;
+        public KeybindList ShowTreeMossTipsToggleKey { get; set; } = KeybindList.Parse("");
         
         public Color HighlightTreeSeedColor { get; set; } = Color.Red;
         public bool RenderTreeTrunk { get; set; } = true;
