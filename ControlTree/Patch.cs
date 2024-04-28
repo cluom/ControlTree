@@ -6,6 +6,7 @@ using StardewValley.TerrainFeatures;
 using StardewValley;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
+using StardewValley.ItemTypeDefinitions;
 
 namespace ControlTree
 {
@@ -42,6 +43,59 @@ namespace ControlTree
             }
         }
 
+        // ReSharper disable once SuggestBaseTypeForParameter
+        private static void DrawTipItem(Tree tree, ParsedItemData itemData, float offsetLayer = 0f)
+        {
+            var tileLocation = tree.Tile;
+            var totalGameTime = Game1.currentGameTime.TotalGameTime;
+            var globalPosition1 = tileLocation * 64f + new Vector2(0.0f, (float)(4.0 * Math.Round(Math.Sin(totalGameTime.TotalMilliseconds / 250.0), 2)) - 64f);
+            var vector22 = new Vector2(40f, 36f);
+            Game1.spriteBatch.Draw(
+                Game1.mouseCursors, 
+                Game1.GlobalToLocal(Game1.viewport, globalPosition1),
+                new Rectangle(141, 465, 20, 24), 
+                Color.White * 0.75f, 
+                0.0f, 
+                Vector2.Zero, 
+                4f, 
+                SpriteEffects.None, 
+                1000f + tileLocation.Y + offsetLayer
+            );
+            
+            Game1.spriteBatch.Draw(
+                itemData.GetTexture(), 
+                Game1.GlobalToLocal(Game1.viewport, globalPosition1 + vector22), 
+                itemData.GetSourceRect(), 
+                Color.White * 0.75f, 
+                0.0f, 
+                new Vector2(8f, 8f), 
+                4f, 
+                SpriteEffects.None, 
+                1001f + tileLocation.Y + offsetLayer
+            );
+        }
+
+        // ReSharper disable once SuggestBaseTypeForParameter
+        private static void DrawHighlightBox(Tree tree)
+        {
+            if (Config is null) return;
+            var tileLocation = tree.Tile;
+
+            // 绘制高亮框
+            Game1.spriteBatch.Draw(
+                TransparentTexture,
+                Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
+                null, 
+                // ReSharper disable once PossibleLossOfFraction
+                Config.HighlightTreeSeedColor * (0.2f + (float)Math.Abs(Math.Sin((double)DateTime.Now.Ticks / TimeSpan.TicksPerSecond * Math.PI)) * 0.8f),
+                0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.None,
+                0f
+            );
+        }
+        
         private static Texture2D CreateTransparentTexture(int width, int height, int borderWidth)
         {
             var texture = new Texture2D(Game1.graphics.GraphicsDevice, width, height);
@@ -67,23 +121,21 @@ namespace ControlTree
         {
             if (Config is not { ModEnable: true }) { return; }
 
+            // 绘制种子高亮
             if (__instance.growthStage.Value == 0 && Config.HighlightTreeSeed)
             {
-                var tileLocation = __instance.Tile;
-
-                // 绘制高亮框
-                Game1.spriteBatch.Draw(
-                    TransparentTexture,
-                    Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
-                    null, 
-                    // ReSharper disable once PossibleLossOfFraction
-                    Config.HighlightTreeSeedColor * (0.2f + (float)Math.Abs(Math.Sin((double)DateTime.Now.Ticks / TimeSpan.TicksPerSecond * Math.PI)) * 0.8f),
-                    0f,
-                    Vector2.Zero,
-                    1f,
-                    SpriteEffects.None,
-                    0f
-                );
+                DrawHighlightBox(__instance);
+            }
+            
+            // 绘制种子提示
+            if (__instance.hasSeed.Value)
+            {
+                DrawTipItem(__instance, ItemRegistry.GetDataOrErrorItem(ItemRegistry.Create(__instance.GetData().SeedItemId).QualifiedItemId), 5f);
+            }
+            // 绘制苔藓提示
+            if (__instance.hasMoss.Value)
+            {
+                DrawTipItem(__instance, ItemRegistry.GetDataOrErrorItem(ItemRegistry.Create("(O)Moss").QualifiedItemId));
             }
 
             var treeType = __instance.treeType;
@@ -100,8 +152,9 @@ namespace ControlTree
         }
 
         [HarmonyPostfix, HarmonyPatch(typeof(Tree), "draw")]
+        // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedMember.Global
-        public static void PostfixDraw()
+        public static void PostfixDraw(Tree __instance)
         {
             SpriteBatchPatch.CanChange = false;
             SpriteBatchPatch.Texture = null;
