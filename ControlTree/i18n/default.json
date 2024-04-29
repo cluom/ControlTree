@@ -36,6 +36,8 @@
   "config.change_maple.tooltip": "Check to apply the above settings to <Maple>",
   "config.change_pine.name": "Apply to <Pine>",
   "config.change_pine.tooltip": "Check to apply the above settings to <Pine>",
+  "config.change_mushroom.name": "Apply to <Mushroom>",
+  "config.change_mushroom.tooltip": "Check to apply the above settings to <Mushroom>",
   "config.change_mahogany.name": "Apply to <Mahogany>",
   "config.change_mahogany.tooltip": "Check to apply the above settings to <Mahogany>",
   "config.change_green_rain_type1.name": "Apply to <Moss Tree 1>",

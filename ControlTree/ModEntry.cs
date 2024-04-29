@@ -28,6 +28,7 @@ namespace ControlTree
             if (Config.ChangeOak) TreePatch.ChangeTreeType(TreeTypeEnum.Oak.Id);
             if (Config.ChangeMaple) TreePatch.ChangeTreeType(TreeTypeEnum.Maple.Id);
             if (Config.ChangePine) TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id);
+            if (Config.ChangePine) TreePatch.ChangeTreeType(TreeTypeEnum.Mushroom.Id);
             if (Config.ChangeMahogany) TreePatch.ChangeTreeType(TreeTypeEnum.Mahogany.Id);
             if (Config.ChangeGreenRainType1) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType1.Id);
             if (Config.ChangeGreenRainType2) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType2.Id);
@@ -270,6 +271,17 @@ namespace ControlTree
                 {
                     Config.ChangePine = value;
                     TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id, value);
+                }
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.change_mushroom.name"),
+                tooltip: () => Helper.Translation.Get("config.change_mushroom.tooltip"),
+                getValue: () => Config.ChangeMushroom,
+                setValue: value =>
+                {
+                    Config.ChangeMushroom = value;
+                    TreePatch.ChangeTreeType(TreeTypeEnum.Mushroom.Id, value);
                 }
             );
             configMenu.AddBoolOption(
