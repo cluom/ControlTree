@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley.ItemTypeDefinitions;
 
-namespace ControlTree
+namespace ControlTree.Framework
 {
     [Harmony]
     public static class TreePatch

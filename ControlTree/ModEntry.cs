@@ -1,4 +1,5 @@
-﻿using GenericModConfigMenu;
+﻿using Common.Integrations;
+using ControlTree.Framework;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -65,10 +66,58 @@ namespace ControlTree
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // 注册配置界面
+            // 创建配置界面
+            CreateConfigMenu();
+        }
+
+        private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+        {
+            // 判断是否可以响应
+            if (!ShouldEnable(forInput: true)) return;
+
+            // 切换配置
+            ToggleConfigOption(Config.ModEnableToggleKey, () => Config.ModEnable = !Config.ModEnable);
+            ToggleConfigOption(Config.TextureChangeToggleKey, () => Config.TextureChange = !Config.TextureChange);
+            ToggleConfigOption(Config.MinishTreeToggleKey, () => Config.MinishTree = !Config.MinishTree);
+            ToggleConfigOption(Config.HighlightTreeSeedToggleKey, () => Config.HighlightTreeSeed = !Config.HighlightTreeSeed);
+            ToggleConfigOption(Config.ShowTreeSeedTipsToggleKey, () => Config.ShowTreeSeedTips = !Config.ShowTreeSeedTips);
+            ToggleConfigOption(Config.ShowTreeMossTipsToggleKey, () => Config.ShowTreeMossTips = !Config.ShowTreeMossTips);
+            ToggleConfigOption(Config.RenderTreeTrunkToggleKey, () => Config.RenderTreeTrunk = !Config.RenderTreeTrunk);
+            ToggleConfigOption(Config.RenderLeafyShadowToggleKey, () => Config.RenderLeafyShadow = !Config.RenderLeafyShadow);
+        }
+
+        private void ToggleConfigOption(KeybindList keyBind, Action toggleAction)
+        {
+            // 如果按键没有被按下则返回
+            if (!keyBind.JustPressed()) return;
+            // 执行切换配置
+            toggleAction();
+            // 保存配置
+            Helper.WriteConfig(Config);
+        }
+
+        private static bool ShouldEnable(bool forInput = false)
+        {
+            // 如果不在游戏中或者不是主玩家则返回
+            if (!Context.IsWorldReady || !Context.IsMainPlayer) return false;
+
+            // 如果不是为了输入则返回true
+            if (!forInput) return true;
+
+            // 如果不是自由玩家并且事件没有结束则返回
+            if (!Context.IsPlayerFree && !Game1.eventUp) return false;
+
+            // 如果键盘分发器没有订阅者则返回
+            return Game1.keyboardDispatcher.Subscriber == null;
+        }
+
+        private void CreateConfigMenu()
+        {
+            // 获取配置界面API
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
             if (configMenu is null) return;
 
+            // 注册配置界面
             configMenu.Register(
                 mod: ModManifest,
                 reset: () => Config = new ModConfig(),
@@ -199,7 +248,6 @@ namespace ControlTree
                 formatValue: i =>
                 {
                     if (_highlightTreeSeedColor.R == i) return $"R: {i:X}";
-                    ;
                     _highlightTreeSeedColor.R = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
                     return $"R: {i:X}";
@@ -222,7 +270,6 @@ namespace ControlTree
                 formatValue: i =>
                 {
                     if (_highlightTreeSeedColor.G == i) return $"G: {i:X}";
-                    ;
                     _highlightTreeSeedColor.G = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
                     return $"G: {i:X}";
@@ -245,7 +292,6 @@ namespace ControlTree
                 formatValue: i =>
                 {
                     if (_highlightTreeSeedColor.B == i) return $"B: {i:X}";
-                    ;
                     _highlightTreeSeedColor.B = (byte)i;
                     _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
                     return $"B: {i:X}";
@@ -396,47 +442,6 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id, value);
                 }
             );
-        }
-
-        private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
-        {
-            // 判断是否可以响应
-            if (!ShouldEnable(forInput: true)) return;
-
-            // 切换配置
-            ToggleConfigOption(Config.ModEnableToggleKey, () => Config.ModEnable = !Config.ModEnable);
-            ToggleConfigOption(Config.TextureChangeToggleKey, () => Config.TextureChange = !Config.TextureChange);
-            ToggleConfigOption(Config.MinishTreeToggleKey, () => Config.MinishTree = !Config.MinishTree);
-            ToggleConfigOption(Config.HighlightTreeSeedToggleKey, () => Config.HighlightTreeSeed = !Config.HighlightTreeSeed);
-            ToggleConfigOption(Config.ShowTreeSeedTipsToggleKey, () => Config.ShowTreeSeedTips = !Config.ShowTreeSeedTips);
-            ToggleConfigOption(Config.ShowTreeMossTipsToggleKey, () => Config.ShowTreeMossTips = !Config.ShowTreeMossTips);
-            ToggleConfigOption(Config.RenderTreeTrunkToggleKey, () => Config.RenderTreeTrunk = !Config.RenderTreeTrunk);
-            ToggleConfigOption(Config.RenderLeafyShadowToggleKey, () => Config.RenderLeafyShadow = !Config.RenderLeafyShadow);
-        }
-
-        private void ToggleConfigOption(KeybindList keyBind, Action toggleAction)
-        {
-            // 如果按键没有被按下则返回
-            if (!keyBind.JustPressed()) return;
-            // 执行切换配置
-            toggleAction();
-            // 保存配置
-            Helper.WriteConfig(Config);
-        }
-
-        private static bool ShouldEnable(bool forInput = false)
-        {
-            // 如果不在游戏中或者不是主玩家则返回
-            if (!Context.IsWorldReady || !Context.IsMainPlayer) return false;
-
-            // 如果不是为了输入则返回true
-            if (!forInput) return true;
-
-            // 如果不是自由玩家并且事件没有结束则返回
-            if (!Context.IsPlayerFree && !Game1.eventUp) return false;
-
-            // 如果键盘分发器没有订阅者则返回
-            return Game1.keyboardDispatcher.Subscriber == null;
         }
     }
 }

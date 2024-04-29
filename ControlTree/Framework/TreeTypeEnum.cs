@@ -1,6 +1,6 @@
 ﻿using Netcode;
 
-namespace ControlTree
+namespace ControlTree.Framework
 {
     public class TreeTypeEnum
     {

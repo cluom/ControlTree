@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI.Utilities;
 
-namespace ControlTree
+namespace ControlTree.Framework
 {
     public sealed class ModConfig
     {
