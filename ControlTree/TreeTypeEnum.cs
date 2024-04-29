@@ -20,6 +20,9 @@ namespace ControlTree
         // "3" : pine tree : 松树
         public static readonly TreeTypeEnum Pine = new("3");
 
+        // "7" : mushroom tree : 蘑菇树
+        public static readonly TreeTypeEnum Mushroom = new("7");
+
         // "8" : mahogany tree : 桃花心木
         public static readonly TreeTypeEnum Mahogany = new("8");
 
