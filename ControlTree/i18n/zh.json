@@ -36,6 +36,8 @@
   "config.change_maple.tooltip": "勾选时将对<枫树>应用上面的设置",
   "config.change_pine.name": "对<松树>生效",
   "config.change_pine.tooltip": "勾选时将对<松树>应用上面的设置",
+  "config.change_mushroom.name": "对<蘑菇树>生效",
+  "config.change_mushroom.tooltip": "勾选时将对<蘑菇树>应用上面的设置",
   "config.change_mahogany.name": "对<桃花心木>生效",
   "config.change_mahogany.tooltip": "勾选时将对<桃花心木>应用上面的设置",
   "config.change_green_rain_type1.name": "对<苔藓树1>生效",

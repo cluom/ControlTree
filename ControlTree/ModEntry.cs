@@ -13,18 +13,26 @@ namespace ControlTree
     internal class ModEntry : Mod
     {
         // ReSharper disable once InconsistentNaming
+        // 模组配置
         private ModConfig Config = null!;
+
+        // 用于配置界面的高亮树木种子颜色贴图
         private readonly Texture2D _highlightTreeSeedColorTexture = new(Game1.graphics.GraphicsDevice, 1, 1);
+
+        // 用于配置界面的高亮树木种子的高亮框颜色
         private Color _highlightTreeSeedColor = Color.Red;
 
         public override void Entry(IModHelper helper)
         {
             // Monitor.Log("Hello World", LogLevel.Debug);
+            // 读取配置
             Config = Helper.ReadConfig<ModConfig>();
 
+            // 注册事件
             helper.Events.Input.ButtonsChanged += OnButtonsChanged!;
             helper.Events.GameLoop.GameLaunched += OnGameLaunched!;
 
+            // 初始化生效树的集合
             if (Config.ChangeOak) TreePatch.ChangeTreeType(TreeTypeEnum.Oak.Id);
             if (Config.ChangeMaple) TreePatch.ChangeTreeType(TreeTypeEnum.Maple.Id);
             if (Config.ChangePine) TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id);
@@ -35,27 +43,31 @@ namespace ControlTree
             if (Config.ChangeGreenRainType3) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id);
             if (Config.ChangeMystic) TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id);
 
+            // 初始化高亮树木种子的高亮框颜色(用于配置界面)
             _highlightTreeSeedColorTexture.SetData(new[] { Config.HighlightTreeSeedColor });
             _highlightTreeSeedColor = Config.HighlightTreeSeedColor;
 
+            // 根据textures.json加载用于替换树木的贴图
             foreach (var textureName in helper.ModContent.Load<List<string>>("assets/textures.json"))
             {
                 Monitor.Log($"Load texture: {textureName}");
                 TreePatch.TextureMapping[textureName] = helper.ModContent.Load<Texture2D>($"assets/{textureName}");
             }
 
+            // 初始化补丁类 传递了配置和监视器
             TreePatch.InitConfig(Config, Monitor);
             SpriteBatchPatch.InitConfig(Config);
 
+            // 启用Harmony补丁
             Harmony harmony = new(ModManifest.UniqueID);
             harmony.PatchAll();
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // 注册配置界面
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-            if (configMenu is null)
-                return;
+            if (configMenu is null) return;
 
             configMenu.Register(
                 mod: ModManifest,
@@ -63,10 +75,12 @@ namespace ControlTree
                 save: () => Helper.WriteConfig(Config)
             );
 
+            // 标题
             configMenu.AddSectionTitle(
                 mod: ModManifest,
                 text: () => Helper.Translation.Get("config.title.text")
             );
+            // 模组开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.mod_enable.name"),
@@ -74,6 +88,7 @@ namespace ControlTree
                 getValue: () => Config.ModEnable,
                 setValue: value => Config.ModEnable = value
             );
+            // 模组开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.mod_enable_toggle_key.name"),
@@ -81,6 +96,7 @@ namespace ControlTree
                 getValue: () => Config.ModEnableToggleKey,
                 setValue: value => Config.ModEnableToggleKey = value
             );
+            // 树木缩小开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.texture_change.name"),
@@ -88,6 +104,7 @@ namespace ControlTree
                 getValue: () => Config.TextureChange,
                 setValue: value => Config.TextureChange = value
             );
+            // 树木缩小开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.texture_change_toggle_key.name"),
@@ -95,6 +112,7 @@ namespace ControlTree
                 getValue: () => Config.TextureChangeToggleKey,
                 setValue: value => Config.TextureChangeToggleKey = value
             );
+            // 树木缩小开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.minish_tree.name"),
@@ -102,6 +120,7 @@ namespace ControlTree
                 getValue: () => Config.MinishTree,
                 setValue: value => Config.MinishTree = value
             );
+            // 树木缩小开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.minish_tree_toggle_key.name"),
@@ -109,6 +128,7 @@ namespace ControlTree
                 getValue: () => Config.MinishTreeToggleKey,
                 setValue: value => Config.MinishTreeToggleKey = value
             );
+            // 树木种子高亮开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.highlight_tree_seed.name"),
@@ -116,6 +136,7 @@ namespace ControlTree
                 getValue: () => Config.HighlightTreeSeed,
                 setValue: value => Config.HighlightTreeSeed = value
             );
+            // 树木种子高亮开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.highlight_tree_seed_toggle_key.name"),
@@ -123,6 +144,7 @@ namespace ControlTree
                 getValue: () => Config.HighlightTreeSeedToggleKey,
                 setValue: value => Config.HighlightTreeSeedToggleKey = value
             );
+            // 树木种子提示开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.show_tree_seed_tips.name"),
@@ -130,6 +152,7 @@ namespace ControlTree
                 getValue: () => Config.ShowTreeSeedTips,
                 setValue: value => Config.ShowTreeSeedTips = value
             );
+            // 树木种子提示开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.show_tree_seed_tips_toggle_key.name"),
@@ -137,6 +160,7 @@ namespace ControlTree
                 getValue: () => Config.ShowTreeSeedTipsToggleKey,
                 setValue: value => Config.ShowTreeSeedTipsToggleKey = value
             );
+            // 树木苔藓提示开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.show_tree_moss_tips.name"),
@@ -144,6 +168,7 @@ namespace ControlTree
                 getValue: () => Config.ShowTreeMossTips,
                 setValue: value => Config.ShowTreeMossTips = value
             );
+            // 树木苔藓提示开关快捷键
             configMenu.AddKeybindList(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.show_tree_moss_tips_toggle_key.name"),
@@ -151,10 +176,12 @@ namespace ControlTree
                 getValue: () => Config.ShowTreeMossTipsToggleKey,
                 setValue: value => Config.ShowTreeMossTipsToggleKey = value
             );
+            // 树木种子高亮颜色贴图
             configMenu.AddImage(
                 mod: ModManifest,
                 texture: () => _highlightTreeSeedColorTexture
             );
+            // 树木种子高亮颜色的R值
             configMenu.AddNumberOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.highlight_tree_seed_color.name"),
@@ -178,6 +205,7 @@ namespace ControlTree
                     return $"R: {i:X}";
                 }
             );
+            // 树木种子高亮颜色的G值
             configMenu.AddNumberOption(
                 mod: ModManifest,
                 name: () => "",
@@ -200,6 +228,7 @@ namespace ControlTree
                     return $"G: {i:X}";
                 }
             );
+            // 树木种子高亮颜色的B值
             configMenu.AddNumberOption(
                 mod: ModManifest,
                 name: () => "",
@@ -222,6 +251,7 @@ namespace ControlTree
                     return $"B: {i:X}";
                 }
             );
+            // 渲染树干开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.render_tree_trunk.name"),
@@ -229,6 +259,7 @@ namespace ControlTree
                 getValue: () => Config.RenderTreeTrunk,
                 setValue: value => Config.RenderTreeTrunk = value
             );
+            // 渲染树叶影子开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.render_leafy_shadow.name"),
@@ -236,10 +267,12 @@ namespace ControlTree
                 getValue: () => Config.RenderLeafyShadow,
                 setValue: value => Config.RenderLeafyShadow = value
             );
+            // 空行
             configMenu.AddParagraph(
                 mod: ModManifest,
                 text: () => ""
             );
+            // 橡树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_oak.name"),
@@ -251,6 +284,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Oak.Id, value);
                 }
             );
+            // 枫树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_maple.name"),
@@ -262,6 +296,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Maple.Id, value);
                 }
             );
+            // 松树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_pine.name"),
@@ -273,6 +308,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Pine.Id, value);
                 }
             );
+            // 蘑菇树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_mushroom.name"),
@@ -284,6 +320,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Mushroom.Id, value);
                 }
             );
+            // 桃花心木
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_mahogany.name"),
@@ -295,6 +332,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.Mahogany.Id, value);
                 }
             );
+            // 苔藓树1
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_green_rain_type1.name"),
@@ -306,6 +344,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType1.Id, value);
                 }
             );
+            // 苔藓树2
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_green_rain_type2.name"),
@@ -317,6 +356,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType2.Id, value);
                 }
             );
+            // 蕨树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_green_rain_type3.name"),
@@ -328,6 +368,7 @@ namespace ControlTree
                     TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id, value);
                 }
             );
+            // 神秘树
             configMenu.AddBoolOption(
                 mod: ModManifest,
                 name: () => Helper.Translation.Get("config.change_mystic.name"),
@@ -343,8 +384,10 @@ namespace ControlTree
 
         private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
         {
+            // 判断是否可以响应
             if (!ShouldEnable(forInput: true)) return;
-            
+
+            // 切换配置
             ToggleConfigOption(Config.ModEnableToggleKey, () => Config.ModEnable = !Config.ModEnable);
             ToggleConfigOption(Config.TextureChangeToggleKey, () => Config.TextureChange = !Config.TextureChange);
             ToggleConfigOption(Config.MinishTreeToggleKey, () => Config.MinishTree = !Config.MinishTree);
@@ -352,22 +395,29 @@ namespace ControlTree
             ToggleConfigOption(Config.ShowTreeSeedTipsToggleKey, () => Config.ShowTreeSeedTips = !Config.ShowTreeSeedTips);
             ToggleConfigOption(Config.ShowTreeMossTipsToggleKey, () => Config.ShowTreeMossTips = !Config.ShowTreeMossTips);
         }
-        
+
         private void ToggleConfigOption(KeybindList keyBind, Action toggleAction)
         {
+            // 如果按键没有被按下则返回
             if (!keyBind.JustPressed()) return;
+            // 执行切换配置
             toggleAction();
+            // 保存配置
             Helper.WriteConfig(Config);
         }
 
         private static bool ShouldEnable(bool forInput = false)
         {
+            // 如果不在游戏中或者不是主玩家则返回
             if (!Context.IsWorldReady || !Context.IsMainPlayer) return false;
 
+            // 如果不是为了输入则返回true
             if (!forInput) return true;
 
+            // 如果不是自由玩家并且事件没有结束则返回
             if (!Context.IsPlayerFree && !Game1.eventUp) return false;
 
+            // 如果键盘分发器没有订阅者则返回
             return Game1.keyboardDispatcher.Subscriber == null;
         }
     }
