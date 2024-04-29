@@ -47,8 +47,14 @@ namespace ControlTree
         // 渲染树干开关
         public bool RenderTreeTrunk { get; set; } = true;
 
+        // 渲染树干开关快捷键
+        public KeybindList RenderTreeTrunkToggleKey { get; set; } = KeybindList.Parse("");
+
         // 渲染树叶影子开关
         public bool RenderLeafyShadow { get; set; } = true;
+
+        // 渲染树叶影子开关快捷键
+        public KeybindList RenderLeafyShadowToggleKey { get; set; } = KeybindList.Parse("");
 
         // 橡树
         public bool ChangeOak { get; set; } = true;

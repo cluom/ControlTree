@@ -259,6 +259,14 @@ namespace ControlTree
                 getValue: () => Config.RenderTreeTrunk,
                 setValue: value => Config.RenderTreeTrunk = value
             );
+            // 渲染树干开关快捷键
+            configMenu.AddKeybindList(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.render_tree_trunk_toggle_key.name"),
+                tooltip: () => Helper.Translation.Get("config.render_tree_trunk_toggle_key.tooltip"),
+                getValue: () => Config.RenderTreeTrunkToggleKey,
+                setValue: value => Config.RenderTreeTrunkToggleKey = value
+            );
             // 渲染树叶影子开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
@@ -266,6 +274,14 @@ namespace ControlTree
                 tooltip: () => Helper.Translation.Get("config.render_leafy_shadow.tooltip"),
                 getValue: () => Config.RenderLeafyShadow,
                 setValue: value => Config.RenderLeafyShadow = value
+            );
+            // 渲染树叶影子开关快捷键
+            configMenu.AddKeybindList(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.render_leafy_shadow_toggle_key.name"),
+                tooltip: () => Helper.Translation.Get("config.render_leafy_shadow_toggle_key.tooltip"),
+                getValue: () => Config.RenderLeafyShadowToggleKey,
+                setValue: value => Config.RenderLeafyShadowToggleKey = value
             );
             // 空行
             configMenu.AddParagraph(
@@ -394,6 +410,8 @@ namespace ControlTree
             ToggleConfigOption(Config.HighlightTreeSeedToggleKey, () => Config.HighlightTreeSeed = !Config.HighlightTreeSeed);
             ToggleConfigOption(Config.ShowTreeSeedTipsToggleKey, () => Config.ShowTreeSeedTips = !Config.ShowTreeSeedTips);
             ToggleConfigOption(Config.ShowTreeMossTipsToggleKey, () => Config.ShowTreeMossTips = !Config.ShowTreeMossTips);
+            ToggleConfigOption(Config.RenderTreeTrunkToggleKey, () => Config.RenderTreeTrunk = !Config.RenderTreeTrunk);
+            ToggleConfigOption(Config.RenderLeafyShadowToggleKey, () => Config.RenderLeafyShadow = !Config.RenderLeafyShadow);
         }
 
         private void ToggleConfigOption(KeybindList keyBind, Action toggleAction)
