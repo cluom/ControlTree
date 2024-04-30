@@ -28,6 +28,9 @@ namespace ControlTree.Framework
 
         // 树木种子高亮开关快捷键
         public KeybindList HighlightTreeSeedToggleKey { get; set; } = KeybindList.Parse("");
+        
+        // 树木透明开关
+        public bool TransparentTree { get; set; } = true;
 
         // 树木种子提示开关
         public bool ShowTreeSeedTips { get; set; } = true;

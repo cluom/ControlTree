@@ -194,6 +194,14 @@ namespace ControlTree
                 getValue: () => Config.HighlightTreeSeedToggleKey,
                 setValue: value => Config.HighlightTreeSeedToggleKey = value
             );
+            // 树木透明开关
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.transparent_tree.name"),
+                tooltip: () => Helper.Translation.Get("config.transparent_tree.tooltip"),
+                getValue: () => Config.TransparentTree,
+                setValue: value => Config.TransparentTree = value
+            );
             // 树木种子提示开关
             configMenu.AddBoolOption(
                 mod: ModManifest,

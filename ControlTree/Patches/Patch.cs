@@ -7,6 +7,7 @@ using StardewValley;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley.ItemTypeDefinitions;
+using Object = StardewValley.Object;
 
 namespace ControlTree.Patches
 {
@@ -154,6 +155,12 @@ namespace ControlTree.Patches
             // 绘制种子高亮
             if (__instance.growthStage.Value == 0 && Config.HighlightTreeSeed)
             {
+                var downTile = __instance.Tile + new Vector2(0, 1);
+                Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
+                if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
+                {
+                    tree.alpha = 0.2f;
+                }
                 DrawHighlightBox(__instance);
             }
 
