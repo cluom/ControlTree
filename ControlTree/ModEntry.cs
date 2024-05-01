@@ -194,6 +194,14 @@ namespace ControlTree
                 getValue: () => Config.HighlightTreeSeedToggleKey,
                 setValue: value => Config.HighlightTreeSeedToggleKey = value
             );
+            // 对施肥过的树种取消高亮
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.name"),
+                tooltip: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.tooltip"),
+                getValue: () => Config.NotHighlightTreeSeedByFertilized,
+                setValue: value => Config.NotHighlightTreeSeedByFertilized = value
+            );
             // 树木透明开关
             configMenu.AddBoolOption(
                 mod: ModManifest,
