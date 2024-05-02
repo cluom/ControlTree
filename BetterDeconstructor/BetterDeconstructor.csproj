@@ -2,9 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>Better_Deconstructor</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+      <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
+    </ItemGroup>
 
 </Project>

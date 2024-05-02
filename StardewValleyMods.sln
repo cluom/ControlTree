@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlTree", "ControlTree\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "Common\Common.shproj", "{6F428F84-C779-426B-AF33-7EABF2FAD755}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Better Deconstructor", "Better Deconstructor\Better Deconstructor.csproj", "{D4595ADA-03B2-4C11-97A9-8396BD7D0348}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterDeconstructor", "BetterDeconstructor\BetterDeconstructor.csproj", "{D4595ADA-03B2-4C11-97A9-8396BD7D0348}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,10 @@
+{
+    "Name": "Better Deconstructor",
+    "Author": "Cluom",
+    "Version": "1.0.0",
+    "Description": "Better Deconstructor.",
+    "UniqueID": "Cluom.BetterDeconstructor",
+    "EntryDll": "BetterDeconstructor.dll",
+    "MinimumApiVersion": "4.0.0",
+    "UpdateKeys": []
+}
