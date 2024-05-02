@@ -19,7 +19,7 @@ internal class ModEntry : Mod
     
     // ReSharper disable once InconsistentNaming
     // 模组配置
-    private ModConfig Config = null!;
+    public ModConfig Config = null!;
 
     // 用于配置界面的高亮树木种子颜色贴图
     private readonly Texture2D _highlightTreeSeedColorTexture = new(Game1.graphics.GraphicsDevice, 1, 1);
@@ -317,6 +317,14 @@ internal class ModEntry : Mod
                 _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
                 return $"B: {i:X}";
             }
+        );
+        // 隐藏树液采集器的产物
+        configMenu.AddBoolOption(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.hide_tapper_product.name"),
+            tooltip: () => Helper.Translation.Get("config.hide_tapper_product.tooltip"),
+            getValue: () => Config.HideTapperProduct,
+            setValue: value => Config.HideTapperProduct = value
         );
         // 渲染树干开关
         configMenu.AddBoolOption(

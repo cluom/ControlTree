@@ -30,6 +30,8 @@
   "config.show_tree_moss_tips_toggle_key.tooltip": "Shortcut key to control whether to show moss tips",
   "config.highlight_tree_seed_color.name": "Highlight box color",
   "config.highlight_tree_seed_color.tooltip": "You can set the color of the highlight box used to mark tree seeds",
+  "config.hide_tapper_product.name": "Hide Tapper Product",
+  "config.hide_tapper_product.tooltip": "Check to hide the product of the tapper, but don't worry, you can still get it",
   "config.render_tree_trunk.name": "Render Tree Trunk",
   "config.render_tree_trunk.tooltip": "Uncheck to render a mature tree as a stump",
   "config.render_tree_trunk_toggle_key.name": "Render Tree Trunk Shortcut Key",

@@ -44,15 +44,15 @@ public static class SpriteBatchPatch
     ]
     // ReSharper disable once UnusedMember.Global
     public static bool Prefix_Draw(
-        // ReSharper disable once InconsistentNaming
-        SpriteBatch __instance,
         [HarmonyArgument("texture")] ref Texture2D texture,
         [HarmonyArgument("position")] ref Vector2 position,
         Rectangle? sourceRectangle,
-        Color color, float rotation,
+        Color color, 
+        float rotation,
         Vector2 origin,
         [HarmonyArgument("scale")] ref Vector2 scale,
-        SpriteEffects effects, float layerDepth
+        SpriteEffects effects, 
+        float layerDepth
     )
     {
         if (!CanChange) return true;
