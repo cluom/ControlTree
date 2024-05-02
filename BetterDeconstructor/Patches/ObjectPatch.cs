@@ -49,6 +49,6 @@ public class ObjectPatch
 
         __result = object1;
         if (object1 is null) return;
-        inputItem.Stack -= inputCount + 1;
+        inputItem.Stack -= inputCount - 1;
     }
 }
