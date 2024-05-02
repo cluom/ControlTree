@@ -1,7 +1,5 @@
 using HarmonyLib;
 using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
-using StardewValley;
 using SObject = StardewValley.Object;
 
 namespace ControlTree.Patches;
@@ -34,7 +32,7 @@ public class TapperPatch
 
         return true;
     }
-    
+
     [
         HarmonyPostfix,
         HarmonyPatch(
