@@ -23,17 +23,8 @@ namespace ControlTree.Framework
         // 树木缩小开关快捷键
         public KeybindList MinishTreeToggleKey { get; set; } = KeybindList.Parse("");
 
-        // 树木种子高亮开关
-        public bool HighlightTreeSeed { get; set; }
-
-        // 树木种子高亮开关快捷键
-        public KeybindList HighlightTreeSeedToggleKey { get; set; } = KeybindList.Parse("");
-
         // 对施肥过的树种取消高亮
         public bool NotHighlightTreeSeedByFertilized { get; set; } = true;
-
-        // 树木透明开关
-        public bool TransparentTree { get; set; } = true;
 
         // 树木种子提示开关
         public bool ShowTreeSeedTips { get; set; } = true;
@@ -47,8 +38,23 @@ namespace ControlTree.Framework
         // 树木苔藓提示开关快捷键
         public KeybindList ShowTreeMossTipsToggleKey { get; set; } = KeybindList.Parse("");
 
+        // 树木种子高亮开关
+        public bool HighlightTreeSeed { get; set; }
+
+        // 树木种子高亮开关快捷键
+        public KeybindList HighlightTreeSeedToggleKey { get; set; } = KeybindList.Parse("");
+
+        // 树苗高亮开关
+        public bool HighlightSapling { get; set; }
+        
+        // 树木透明开关
+        public bool TransparentTree { get; set; } = true;
+
         // 树木种子高亮颜色
         public Color HighlightTreeSeedColor { get; set; } = Color.Red;
+        
+        // 树苗高亮颜色
+        public Color HighlightSaplingColor { get; set; } = Color.Green;
 
         // 隐藏树液采集器的产物
         public bool HideTapperProduct { get; set; }

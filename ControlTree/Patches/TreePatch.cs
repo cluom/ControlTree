@@ -24,12 +24,12 @@ public static class TreePatch
     public static readonly Dictionary<string, Texture2D> TextureMapping = new();
 
     // 高亮框贴图
-    private static readonly Texture2D TransparentTexture;
+    private static readonly Texture2D HighlightBoxTexture;
 
     static TreePatch()
     {
         // 初始化高亮框贴图
-        TransparentTexture = CreateTransparentTexture(60, 60, 4);
+        HighlightBoxTexture = CreateTransparentTexture(60, 60, 4);
     }
 
     public static void InitConfig(ModConfig config)
@@ -90,7 +90,7 @@ public static class TreePatch
 
     // ReSharper disable once SuggestBaseTypeForParameter
     // 用于绘制高亮框
-    private static void DrawHighlightBox(Tree tree)
+    private static void DrawHighlightBox(Tree tree, Color color)
     {
         if (Config is null) return;
         var tileLocation = tree.Tile;
@@ -99,11 +99,11 @@ public static class TreePatch
 
         // 绘制高亮框
         Game1.spriteBatch.Draw(
-            TransparentTexture,
+            HighlightBoxTexture,
             Game1.GlobalToLocal(Game1.viewport, new Vector2(tileLocation.X * 64f + 2f, tileLocation.Y * 64f + 2f)),
             null,
             // ReSharper disable once PossibleLossOfFraction
-            Config.HighlightTreeSeedColor * (
+            color * (
                 0.2f + sinValue * 0.8f
             ),
             0f,
@@ -146,18 +146,35 @@ public static class TreePatch
             return;
         }
 
-        // 绘制种子高亮
-        if (__instance.growthStage.Value == 0 && Config.HighlightTreeSeed)
+        switch (__instance.growthStage.Value)
         {
-            if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
-            var downTile = __instance.Tile + new Vector2(0, 1);
-            Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
-            if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
+            // 绘制种子高亮
+            case 0 when Config.HighlightTreeSeed:
             {
-                tree.alpha = 0.2f;
-            }
+                if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
+                var downTile = __instance.Tile + new Vector2(0, 1);
+                Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
+                if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
+                {
+                    tree.alpha = 0.2f;
+                }
 
-            DrawHighlightBox(__instance);
+                DrawHighlightBox(__instance, Config.HighlightTreeSeedColor);
+                break;
+            }
+            case <= 2 when Config.HighlightSapling:
+            {
+                if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
+                var downTile = __instance.Tile + new Vector2(0, 1);
+                Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
+                if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
+                {
+                    tree.alpha = 0.2f;
+                }
+
+                DrawHighlightBox(__instance, Config.HighlightSaplingColor);
+                break;
+            }
         }
 
         // 绘制种子提示

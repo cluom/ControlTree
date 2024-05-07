@@ -21,11 +21,13 @@ internal class ModEntry : Mod
     // 模组配置
     public ModConfig Config = null!;
 
-    // 用于配置界面的高亮树木种子颜色贴图
+    // 用于配置界面的高亮树木种子和树苗的颜色贴图
     private readonly Texture2D _highlightTreeSeedColorTexture = new(Game1.graphics.GraphicsDevice, 1, 1);
+    private readonly Texture2D _highlightSaplingColorTexture = new(Game1.graphics.GraphicsDevice, 1, 1);
 
-    // 用于配置界面的高亮树木种子的高亮框颜色
+    // 用于配置界面的高亮树木种子和树苗的高亮框颜色
     private Color _highlightTreeSeedColor = Color.Red;
+    private Color _highlightSaplingColor = Color.Green;
 
     public override void Entry(IModHelper helper)
     {
@@ -49,9 +51,11 @@ internal class ModEntry : Mod
         if (Config.ChangeGreenRainType3) TreePatch.ChangeTreeType(TreeTypeEnum.GreenRainType3.Id);
         if (Config.ChangeMystic) TreePatch.ChangeTreeType(TreeTypeEnum.Mystic.Id);
 
-        // 初始化高亮树木种子的高亮框颜色(用于配置界面)
-        _highlightTreeSeedColorTexture.SetData(new[] { Config.HighlightTreeSeedColor });
+        // 初始化高亮树木种子和树苗的高亮框颜色(用于配置界面)
         _highlightTreeSeedColor = Config.HighlightTreeSeedColor;
+        _highlightSaplingColor = Config.HighlightSaplingColor;
+        _highlightTreeSeedColorTexture.SetData(new[] { Config.HighlightTreeSeedColor });
+        _highlightSaplingColorTexture.SetData(new[] { Config.HighlightSaplingColor });
 
         // 根据textures.json加载用于替换树木的贴图
         foreach (var textureName in helper.ModContent.Load<List<string>>("assets/textures.json"))
@@ -182,30 +186,6 @@ internal class ModEntry : Mod
             getValue: () => Config.MinishTreeToggleKey,
             setValue: value => Config.MinishTreeToggleKey = value
         );
-        // 树木种子高亮开关
-        configMenu.AddBoolOption(
-            mod: ModManifest,
-            name: () => Helper.Translation.Get("config.highlight_tree_seed.name"),
-            tooltip: () => Helper.Translation.Get("config.highlight_tree_seed.tooltip"),
-            getValue: () => Config.HighlightTreeSeed,
-            setValue: value => Config.HighlightTreeSeed = value
-        );
-        // 树木种子高亮开关快捷键
-        configMenu.AddKeybindList(
-            mod: ModManifest,
-            name: () => Helper.Translation.Get("config.highlight_tree_seed_toggle_key.name"),
-            tooltip: () => Helper.Translation.Get("config.highlight_tree_seed_toggle_key.tooltip"),
-            getValue: () => Config.HighlightTreeSeedToggleKey,
-            setValue: value => Config.HighlightTreeSeedToggleKey = value
-        );
-        // 对施肥过的树种取消高亮
-        configMenu.AddBoolOption(
-            mod: ModManifest,
-            name: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.name"),
-            tooltip: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.tooltip"),
-            getValue: () => Config.NotHighlightTreeSeedByFertilized,
-            setValue: value => Config.NotHighlightTreeSeedByFertilized = value
-        );
         // 树木透明开关
         configMenu.AddBoolOption(
             mod: ModManifest,
@@ -245,6 +225,30 @@ internal class ModEntry : Mod
             tooltip: () => Helper.Translation.Get("config.show_tree_moss_tips_toggle_key.tooltip"),
             getValue: () => Config.ShowTreeMossTipsToggleKey,
             setValue: value => Config.ShowTreeMossTipsToggleKey = value
+        );
+        // 树木种子高亮开关
+        configMenu.AddBoolOption(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.highlight_tree_seed.name"),
+            tooltip: () => Helper.Translation.Get("config.highlight_tree_seed.tooltip"),
+            getValue: () => Config.HighlightTreeSeed,
+            setValue: value => Config.HighlightTreeSeed = value
+        );
+        // 对施肥过的树种取消高亮
+        configMenu.AddBoolOption(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.name"),
+            tooltip: () => Helper.Translation.Get("config.not_highlight_tree_seed_by_fertilized.tooltip"),
+            getValue: () => Config.NotHighlightTreeSeedByFertilized,
+            setValue: value => Config.NotHighlightTreeSeedByFertilized = value
+        );
+        // 树木种子高亮开关快捷键
+        configMenu.AddKeybindList(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.highlight_tree_seed_toggle_key.name"),
+            tooltip: () => Helper.Translation.Get("config.highlight_tree_seed_toggle_key.tooltip"),
+            getValue: () => Config.HighlightTreeSeedToggleKey,
+            setValue: value => Config.HighlightTreeSeedToggleKey = value
         );
         // 树木种子高亮颜色贴图
         configMenu.AddImage(
@@ -315,6 +319,86 @@ internal class ModEntry : Mod
                 if (_highlightTreeSeedColor.B == i) return $"B: {i:X}";
                 _highlightTreeSeedColor.B = (byte)i;
                 _highlightTreeSeedColorTexture.SetData(new[] { _highlightTreeSeedColor });
+                return $"B: {i:X}";
+            }
+        );
+        // 树苗高亮开关
+        configMenu.AddBoolOption(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.highlight_sapling.name"),
+            tooltip: () => Helper.Translation.Get("config.highlight_sapling.tooltip"),
+            getValue: () => Config.HighlightSapling,
+            setValue: value => Config.HighlightSapling = value
+        );
+        // 树苗高亮颜色贴图
+        configMenu.AddImage(
+            mod: ModManifest,
+            texture: () => _highlightSaplingColorTexture
+        );
+        // 树苗高亮颜色的R值
+        configMenu.AddNumberOption(
+            mod: ModManifest,
+            name: () => Helper.Translation.Get("config.highlight_sapling_color.name"),
+            tooltip: () => Helper.Translation.Get("config.highlight_sapling_color.tooltip"),
+            min: 0,
+            max: 255,
+            getValue: () => Config.HighlightSaplingColor.R,
+            setValue: value =>
+            {
+                var newColor = Config.HighlightSaplingColor;
+                newColor.R = (byte)value;
+                _highlightSaplingColorTexture.SetData(new[] { newColor });
+                Config.HighlightSaplingColor = newColor;
+            },
+            formatValue: i =>
+            {
+                if (_highlightSaplingColor.R == i) return $"R: {i:X}";
+                _highlightSaplingColor.R = (byte)i;
+                _highlightSaplingColorTexture.SetData(new[] { _highlightSaplingColor });
+                return $"R: {i:X}";
+            }
+        );
+        // 树苗高亮颜色的G值
+        configMenu.AddNumberOption(
+            mod: ModManifest,
+            name: () => "",
+            min: 0,
+            max: 255,
+            getValue: () => Config.HighlightSaplingColor.G,
+            setValue: value =>
+            {
+                var newColor = Config.HighlightSaplingColor;
+                newColor.G = (byte)value;
+                _highlightSaplingColorTexture.SetData(new[] { newColor });
+                Config.HighlightSaplingColor = newColor;
+            },
+            formatValue: i =>
+            {
+                if (_highlightSaplingColor.G == i) return $"G: {i:X}";
+                _highlightSaplingColor.G = (byte)i;
+                _highlightSaplingColorTexture.SetData(new[] { _highlightSaplingColor });
+                return $"G: {i:X}";
+            }
+        );
+        // 树苗高亮颜色的B值
+        configMenu.AddNumberOption(
+            mod: ModManifest,
+            name: () => "",
+            min: 0,
+            max: 255,
+            getValue: () => Config.HighlightSaplingColor.B,
+            setValue: value =>
+            {
+                var newColor = Config.HighlightSaplingColor;
+                newColor.B = (byte)value;
+                _highlightSaplingColorTexture.SetData(new[] { newColor });
+                Config.HighlightSaplingColor = newColor;
+            },
+            formatValue: i =>
+            {
+                if (_highlightSaplingColor.B == i) return $"B: {i:X}";
+                _highlightSaplingColor.B = (byte)i;
+                _highlightSaplingColorTexture.SetData(new[] { _highlightSaplingColor });
                 return $"B: {i:X}";
             }
         );
