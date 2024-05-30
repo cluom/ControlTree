@@ -162,6 +162,8 @@ public static class TreePatch
                 DrawHighlightBox(__instance, Config.HighlightTreeSeedColor);
                 break;
             }
+            case 0:
+                break;
             case <= 2 when Config.HighlightSapling:
             {
                 if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
