@@ -136,6 +136,37 @@ public static class TreePatch
         return texture;
     }
 
+    // 用于透明化树木
+    private static void TransparentTree(Vector2 tile)
+    {
+        if (!Config!.TransparentTree)
+        {
+            return;
+        }
+        
+        var downTile = tile + new Vector2(0, 1);
+        Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
+        if (tempObject is Tree tree && tree.growthStage.Value >= 5)
+        {
+            tree.alpha = 0.2f;
+        }
+
+        if (Config is not { TextureChange: false, MinishTree: false }) return;
+
+        for (var offX = -1; offX <= 1; offX++)
+        {
+            for (var offY = 2; offY <= 5; offY++)
+            {
+                var offsetTile = tile + new Vector2(offX, offY);
+                Game1.currentLocation.terrainFeatures.TryGetValue(offsetTile, out var offsetObject);
+                if (offsetObject is Tree offsetTree && offsetTree.growthStage.Value >= 5)
+                {
+                    offsetTree.alpha = 0.2f;
+                }
+            }
+        }
+    }
+    
     [HarmonyPrefix, HarmonyPatch(typeof(Tree), "draw")]
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once UnusedMember.Global
@@ -152,12 +183,7 @@ public static class TreePatch
             case 0 when Config.HighlightTreeSeed:
             {
                 if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
-                var downTile = __instance.Tile + new Vector2(0, 1);
-                Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
-                if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
-                {
-                    tree.alpha = 0.2f;
-                }
+                TransparentTree(__instance.Tile);
 
                 DrawHighlightBox(__instance, Config.HighlightTreeSeedColor);
                 break;
@@ -169,10 +195,7 @@ public static class TreePatch
                 if (Config.NotHighlightTreeSeedByFertilized && __instance.fertilized.Value) return;
                 var downTile = __instance.Tile + new Vector2(0, 1);
                 Game1.currentLocation.terrainFeatures.TryGetValue(downTile, out var tempObject);
-                if (Config.TransparentTree && tempObject is Tree tree && tree.growthStage.Value >= 5)
-                {
-                    tree.alpha = 0.2f;
-                }
+                TransparentTree(__instance.Tile);
 
                 DrawHighlightBox(__instance, Config.HighlightSaplingColor);
                 break;
